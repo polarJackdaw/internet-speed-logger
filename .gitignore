@@ -1,0 +1,5 @@
+__pycache__/
+*.log
+scatter_plot.png
+internet_data.txt
+error_log.txt
