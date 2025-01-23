@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Print the commands available to the user
 def print_commands():
     print("Commands: ")
     print("1. Test and display internet speed")
