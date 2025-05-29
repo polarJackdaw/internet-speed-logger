@@ -1,4 +1,10 @@
 speedtest-cli
 pandas
 matplotlib
+<<<<<<< HEAD
 numpy
+=======
+numpy
+Pillow
+pygame
+>>>>>>> dd8a8c3 (Changed program to GUI)
