@@ -13,6 +13,20 @@ import subprocess
 import sys
 import matplotlib.colors as mcolors
 import random
+import json
+
+# ==== Load settings from JSON ====
+SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
+
+def load_settings():
+    try:
+        with open(SETTINGS_FILE, "r") as f:
+            return json.load(f)
+    except Exception as e:
+        log_error(f"Failed to load settings: {e}")
+        return {}
+
+settings = load_settings()
 
 # ==== Initialize Pygame Mixer ====
 pygame.mixer.init()
@@ -20,7 +34,8 @@ loaded_sounds = {}
 
 # ==== Path to sound folder ====
 SOUND_FOLDER = os.path.join(os.path.dirname(__file__), "sounds")
-MUSIC_FOLDER = os.path.join(SOUND_FOLDER, "music")
+MUSIC_FOLDER = os.path.join(os.path.dirname(__file__), settings.get("music_folder", "sounds/music"))
+
 
 def load_sound(filename):
     full_path = os.path.join(SOUND_FOLDER, filename)
