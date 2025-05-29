@@ -23,6 +23,15 @@ You can add your own `.mp3` files to play as background music.
 4. The app will randomly loop through all `.mp3` files in that folder.
 5. To skip a song, toggle the music OFF and then ON again.
 
+### Custom Music Folder
+
+Change the default music folder in settings.json
+
+Make sure the path has double slashes:
+{
+  "music_folder": "C:\\Users\\prool\\Music\\mp3\\"
+}
+
 ### How to Customize Sound Effects:
 
 1. Navigate to the `sounds` folder.
