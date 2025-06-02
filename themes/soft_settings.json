@@ -1,0 +1,58 @@
+{
+  "music_folder": "sounds/music",
+  "action_button_text_color": "#FFFFFF",
+  "action_button_backround_color": "#ff69b4",
+  "action_button_click_color": "#d63384",
+  "button_active_color": "#FF0088",
+  "button_inactive_color": "#FD3EA4",
+  "auto_test_text_color": "#ffc0cb",
+  "sound_text_color": "#ffc0cb",
+  "music_test_text_color": "#ffc0cb",
+  "interval_text_color": "#D848D8",
+  "interval_background_color": "#f3d1f4",
+  "colors_list": ["lavender", "lightpink", "orchid", "plum", "hotpink", "fuchsia"],
+  "background_color": "#fff0f5",
+  "text_color": "#ff1493",
+  "line_color": "#ba55d3",
+  "frame_background_color": "#fce4ec",
+  "title_text_color": "#FF729C",
+  "output_text_color": "#800080",
+  "root_background_color": "#ffe6fa",
+  "legend": {
+    "text_color": "#ff69b4",
+    "enabled": true,
+    "ncol": 2,
+    "frameon": false
+  },
+  "colorbar": {
+    "label": "Speed (Mbps)",
+    "text_color": "#ff1493"
+  },
+  "grid": {
+    "enabled": false,
+    "color": "#e6add8",
+    "linestyle": ":",
+    "linewidth": 0.7
+  },
+  "scatter": {
+    "edgecolor": "#ffffff",
+    "linewidth": 1.5,
+    "marker": "x",
+    "size": 100
+  },
+  "average_lines": {
+    "enabled": true,
+    "download": {
+      "color": "#ff69b4",
+      "linestyle": "--",
+      "linewidth": 1.2,
+      "label_template": "Avg Download ({:.2f} Mbps)"
+    },
+    "upload": {
+      "color": "#da70d6",
+      "linestyle": "--",
+      "linewidth": 1.2,
+      "label_template": "Avg Upload ({:.2f} Mbps)"
+    }
+  }
+}

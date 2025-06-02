@@ -1,8 +1,8 @@
 {
   "music_folder": "sounds/music",
-  "action_button_text_color": "#1debb7",
-  "action_button_backround_color": "#0d1f3b",
-  "action_button_click_color": "#2563eb",
+  "action_button_text_color" : "#1debb7",
+  "action_button_backround_color" : "#0d1f3b",
+  "action_button_click_color" : "#2563eb",
   "button_active_color": "#007000",
   "button_inactive_color": "#8F000A",
   "auto_test_text_color": "white",
@@ -10,21 +10,16 @@
   "music_test_text_color": "white",
   "interval_text_color": "black",
   "interval_background_color": "grey",
-  "colors_list": [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "violet"
-  ],
+  "colors_list": ["red", "orange", "yellow", "green", "blue", "violet"],
   "background_color": "#0b0c0c",
   "text_color": "red",
   "line_color": "blue",
+
   "frame_background_color": "#1e1e2e",
   "title_text_color": "#1bcca0",
   "output_text_color": "#e0e0e0",
   "root_background_color": "#0d0dc1",
+
   "legend": {
     "text_color": "pink",
     "enabled": true,
