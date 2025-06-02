@@ -10,6 +10,7 @@ Python GUI tool to test, log, and visualize internet speeds with optional backgr
 - Automatic testing at custom intervals
 - Sound effects with mute toggle
 - Custom background music support (`.mp3` playback)
+- Custom Themes with theme_manager.py
 
 ## Custom Music
 
