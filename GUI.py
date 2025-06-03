@@ -15,7 +15,7 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 
 # ==== Load settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
