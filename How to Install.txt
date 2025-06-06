@@ -1,32 +1,34 @@
 # INSTALATION
-    1. Install Python:
+	1. Install Python:
 
-        Go to https://www.python.org/downloads/.
+		Go to https://www.python.org/downloads/.
 
-        Download the latest Python 3 version for your system.
+		Download the latest Python 3 version for your system.
 
-        Important: During installation, make sure to check the box that says “Add Python to PATH” before clicking Install.
+		Important: During installation, make sure to check the box that says “Add Python to PATH”.
 
-    2. Open Command Prompt:
-        Press Win + R, type cmd, and press Enter.
+	2. Open Command Prompt:
+		Press Win + R, type cmd, and press Enter.
 
-    3. Install the required packages:
+	3. Install the required packages:
 
-        Copy and paste this command into the Command Prompt, then press Enter:
-    	pip install speedtest-cli pandas matplotlib numpy Pillow pygame
+		Copy and paste this command into the Command Prompt, then press Enter:
+		pip install speedtest-cli pandas matplotlib numpy Pillow pygame
 
-    	Wait for the installation to finish.
+		Wait for the installation to finish.
+
+		You can close Command Prompt now.
 
 	4. Set Python as default for .py files:
-	    Right-click on ISTU.py file (Same folder as this README.txt)
+		Select and Right-Click on ISTU.py file (Same folder as this .txt)
 
-	    Select Properties.
+		Select Properties.
 
-	    In the Properties window, next to “Opens with:”, click the Change… button.
+		In the Properties window, next to “Opens with:”, click the Change… button.
 
-	    In the list of apps, if you see Python (or python.exe), select it.
+		In the list of apps, if you see Python (or python.exe), select it.
 
-	    IF NOT LISTED:
+		IF NOT LISTED:
 		[
 			Click More apps → Look for another app on this PC.
 			Navigate to your Python installation folder (typically):
@@ -38,4 +40,4 @@
 
 		Click OK to close the Properties window.
 
-	    The program is now ready to be used. Just open ISTU.py (Works like .exe)
+		The program is now ready to be used. Just open ISTU.py (Works like .exe)
