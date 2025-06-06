@@ -1,4 +1,4 @@
-# Internet Speed Logger
+# ISTU Internet Speed Test Utility
 
 Python GUI tool to test, log, and visualize internet speeds with optional background music.
 
