@@ -15,7 +15,7 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.0.1"
+VERSION = "2.1.0"
 
 # ==== Load settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
@@ -376,8 +376,8 @@ def run_speed_test():
                 diff_dl_pct = ((dl_mbps - avg_dl) / avg_dl) * 100
                 diff_ul_pct = ((ul_mbps - avg_ul) / avg_ul) * 100
 
-                comparison_dl = f"{abs(round(diff_dl_pct, 2))}% {'faster' if diff_dl_pct > 0 else 'slower'} than average download"
-                comparison_ul = f"{abs(round(diff_ul_pct, 2))}% {'faster' if diff_ul_pct > 0 else 'slower'} than average upload"
+                comparison_dl = f"{abs(round(diff_dl_pct, 2))}% {'faster' if diff_dl_pct > 0 else 'slower'}"
+                comparison_ul = f"{abs(round(diff_ul_pct, 2))}% {'faster' if diff_ul_pct > 0 else 'slower'}"
 
                 # === Extremes ===
                 max_dl = df[2].max()
@@ -410,28 +410,17 @@ def run_speed_test():
             comparison_ul = "N/A (error)"
 
         output_text.set(
-            f"📅 Date: {result[0]}\n"
-            f"⏰ Time: {result[1]}\n"
-            f"⬇️ Download: {dl_mbps} Mbps ({dl_mbs} MB/s)\n"
-            f"⬇️ GB 1/15/30/60 min: {round(dl_mbs * 60 / 1000, 3)}/{round(dl_mbs * 900 / 1000, 3)}/{round(dl_mbs * 1800 / 1000, 3)}/{round(dl_mbs * 3600 / 1000, 3)}\n"
-            f"⬆️ Upload: {ul_mbps} Mbps ({ul_mbs} MB/s)\n"
-            f"⬇️ GB 1/15/30/60 min: {round(ul_mbs * 60 / 1000, 3)}/{round(ul_mbs * 900 / 1000, 3)}/{round(ul_mbs * 1800 / 1000, 3)}/{round(ul_mbs * 3600 / 1000, 3)}\n"
-            f"🏓 Ping: {result[4]} ms\n"
-            f"🌐 ISP: {result[5]}\n"
-            f"🏳️ Country: {result[6]}\n"
-            f"📍 Latitude: {result[7]}\n"
-            f"📍 Longitude: {result[8]}\n\n"
+            f"📅 {result[0]} | {result[1]}\n"
+            f"📍 {result[5]} | {result[6].strip()} | {result[4]} | {result[7]}, {result[8]}\n\n"
 
-            f"📊 Average Download: {round(avg_dl, 2)} Mbps ({avg_dl_mbs} MB/s)\n"
-            f"📊 Average Upload: {round(avg_ul, 2)} Mbps ({avg_ul_mbs} MB/s)\n"
-            f"🔁 Total Tests Run: {tests_run}\n"
-            f"📉 Download Comparison: {comparison_dl}\n"
-            f"📈 Upload Comparison: {comparison_ul}\n\n"
-
-            f"🚀 Fastest Download: {round(max_dl, 2)} Mbps ({max_dl_mbs} MB/s)\n"
-            f"🐢 Slowest Download: {round(min_dl, 2)} Mbps ({min_dl_mbs} MB/s)\n"
-            f"🚀 Fastest Upload: {round(max_ul, 2)} Mbps ({max_ul_mbs} MB/s)\n"
-            f"🐢 Slowest Upload: {round(min_ul, 2)} Mbps ({min_ul_mbs} MB/s)"
+            f"Mbps (MB/s) | 1/15/30/60 min GB\n"
+            f"D: {dl_mbps} ({dl_mbs}) | {round(dl_mbs * 60 / 1000, 3)}/{round(dl_mbs * 900 / 1000, 3)}/{round(dl_mbs * 1800 / 1000, 3)}/{round(dl_mbs * 3600 / 1000, 3)}\n"
+            f"U: {ul_mbps} ({ul_mbs}) | {round(ul_mbs * 60 / 1000, 3)}/{round(ul_mbs * 900 / 1000, 3)} {round(ul_mbs * 1800 / 1000, 3)}/{round(ul_mbs * 3600 / 1000, 3)}\n"
+            f"Comp. Avg | D: {comparison_dl} | U: {comparison_ul}\n\n"
+            
+            f"Tests: {tests_run} | Avg D/U: {round(avg_dl, 2)} / {round(avg_ul, 2)} ({avg_dl_mbs}/{avg_ul_mbs})\n"
+            f"Fastest D/U: {round(max_dl, 2)} / {round(max_ul, 2)} ({max_dl_mbs}/{max_ul_mbs})\n"
+            f"Slowest D/U: {round(min_dl, 2)} / {round(min_ul, 2)} ({min_dl_mbs}/{min_ul_mbs})"
         )
 
     else:
