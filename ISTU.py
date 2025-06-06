@@ -15,7 +15,7 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.1.1"
+VERSION = "2.1.2"
 
 # ==== Load settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
@@ -266,8 +266,8 @@ def save_scatter_plot():
 
 # ==== GUI ====
 root = tk.Tk()
-root.title("ISLU v" + VERSION)
-root.iconbitmap('islu.ico')
+root.title("ISTU v" + VERSION)
+root.iconbitmap('istu.ico')
 root.configure(bg=settings.get("root_background_color", "#0d0dc1"))
 root.resizable(False, False)
 

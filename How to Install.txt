@@ -18,7 +18,7 @@
     	Wait for the installation to finish.
 
 	4. Set Python as default for .py files:
-	    Right-click on GUI.py file (Same folder as this README.txt)
+	    Right-click on ISTU.py file (Same folder as this README.txt)
 
 	    Select Properties.
 
@@ -38,4 +38,4 @@
 
 		Click OK to close the Properties window.
 
-	    The program is now ready to be used. Just open GUI.py (Works like .exe)
+	    The program is now ready to be used. Just open ISTU.py (Works like .exe)
