@@ -15,7 +15,7 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 
 # ==== Load settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
@@ -316,7 +316,7 @@ def animate_gif(frame_index=0):
         return  # Stop if root window is destroyed
     if testing.get():
         gif_label.configure(image=gif_frames[frame_index])
-        root.after(100, animate_gif, (frame_index + 1) % len(gif_frames))
+        root.after(30, animate_gif, (frame_index + 1) % len(gif_frames))
     else:
         gif_label.configure(image=idle_img)
 

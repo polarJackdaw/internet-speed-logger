@@ -11,3 +11,10 @@ Version 2.0.1
 Version 2.1.0
     - Updated animation
     - Condensed statistics infromation
+Version 2.1.1
+    - Updated readme
+    - Added How to Install.txt
+    - Changed apply.wav and testing.wav, added old sound as testing_legacy_2.wav
+    - Changed default scatter plot backround color to #161616
+    - Made animation smoother
+

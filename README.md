@@ -12,6 +12,13 @@ Python GUI tool to test, log, and visualize internet speeds with optional backgr
 - Custom background music support (`.mp3` playback)
 - Custom Themes with theme_manager.py
 
+## Theme Customization & Theme manager
+
+- Change the colors of the program and the scatter plot by editing settings.json
+- Run theme_manager.py to Apply, Delete or Add themes.
+- "Save Current As New" will save settings.json as a new theme
+- More & better themes coming soon...
+
 ## Custom Music
 
 You can add your own `.mp3` files to play as background music.
@@ -28,9 +35,9 @@ You can add your own `.mp3` files to play as background music.
 
 Change the default music folder in settings.json
 
-Make sure the path has double slashes:
+Make sure the path has double slashes (example.):
 {
-  "music_folder": "C:\\Users\\prool\\Music\\mp3\\"
+  "music_folder": "C:\\Users\\polarjackdaw\\Music\\mp3\\"
 }
 
 ### How to Customize Sound Effects:
