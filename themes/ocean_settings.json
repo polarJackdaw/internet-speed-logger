@@ -1,7 +1,7 @@
 {
   "music_folder": "sounds/music",
   "action_button_text_color": "#0fffd1",
-  "action_button_backround_color": "#072c33",
+  "action_button_background_color": "#072c33",
   "action_button_click_color": "#00bcd4",
   "button_active_color": "#00a896",
   "button_inactive_color": "#014f43",

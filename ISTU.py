@@ -15,7 +15,7 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.1.2"
+VERSION = "2.1.3"
 
 # ==== Load settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
@@ -36,7 +36,7 @@ loaded_sounds = {}
 SOUND_FOLDER = os.path.join(os.path.dirname(__file__), "sounds")
 MUSIC_FOLDER = os.path.join(os.path.dirname(__file__), settings.get("music_folder", "sounds/music"))
 
-# Make loaded_sounds[]
+# Load sounds into loaded_sounds[]
 def load_sound(filename):
     full_path = os.path.join(SOUND_FOLDER, filename)
     if os.path.exists(full_path):
@@ -44,7 +44,7 @@ def load_sound(filename):
     else:
         loaded_sounds[filename] = None
 
-for sound_file in ["testing.wav", "plot.wav", "auto_on.wav", "auto_off.wav", "interval.wav"]:
+for sound_file in ["testing.wav", "plot.wav", "auto_on.wav", "auto_off.wav", "interval.wav", "error.wav"]:
     load_sound(sound_file)
 
 
@@ -112,153 +112,158 @@ def open_image(path):
 
 def save_scatter_plot():
     try:
-        play_sound("plot.wav")
-        data = pd.read_csv('internet_data.txt', header=None)
-        if data.shape[1] < 4:
-            raise ValueError("Data file does not have the required columns.")
-        times = data[1]
-        download_speeds = data[2]
-        upload_speeds = data[3]
-        times_in_hours = [int(h) + int(m) / 60 + int(s) / 3600 for h, m, s in (t.split(':') for t in times)]
-
-        all_speeds = pd.concat([download_speeds, upload_speeds])
-        min_speed = all_speeds.min()
-        max_speed = all_speeds.max()
-
-        colors_list = settings.get("colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet'])
-        valid_colors = list(mcolors.CSS4_COLORS.keys())
-        colors_list = [c for c in settings.get("colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet']) if c in valid_colors]
-
-        if not colors_list:
-            # Fallback in case user provides an empty or invalid list
-            colors_list = ['red', 'orange', 'yellow', 'green', 'blue', 'violet']
-
-        cmap = mcolors.LinearSegmentedColormap.from_list("speed_cmap", colors_list)
-        norm = mcolors.Normalize(vmin=min_speed, vmax=max_speed)
-
-        background_color = settings.get("background_color", "white")
-        fig, ax = plt.subplots(figsize=(10, 6))
-
-        text_color = settings.get("text_color", "black")
-        line_color = settings.get("line_color", "black")
-
-        # Titles and labels
-        ax.set_title("Scatter Plot", color=text_color)
-        ax.set_xlabel("X", color=text_color)
-        ax.set_ylabel("Y", color=text_color)
-
-        # Ticks
-        ax.tick_params(colors=text_color)
-
-        # Spines
-        for spine in ax.spines.values():
-            spine.set_color(line_color)
-
-        # Optional grid
-        grid_settings = settings.get("grid", {})
-        grid_enabled = grid_settings.get("enabled", True)
-
-        if grid_enabled:
-            grid_color = grid_settings.get("color", "gray")
-            grid_linestyle = grid_settings.get("linestyle", "--")
-            grid_linewidth = grid_settings.get("linewidth", 0.5)
-            ax.grid(True, color=grid_color, linestyle=grid_linestyle, linewidth=grid_linewidth)
+        if not os.path.exists('internet_data.txt'):
+            play_sound("error.wav")
+            #messagebox.showinfo("Info", "Please run a speed test first.")
+            return
         else:
-            ax.grid(False)
+            #play_sound("plot.wav")
+            data = pd.read_csv('internet_data.txt', header=None)
+            if data.shape[1] < 4:
+                raise ValueError("Data file does not have the required columns.")
+            times = data[1]
+            download_speeds = data[2]
+            upload_speeds = data[3]
+            times_in_hours = [int(h) + int(m) / 60 + int(s) / 3600 for h, m, s in (t.split(':') for t in times)]
 
-        fig.patch.set_facecolor(background_color)
-        ax.set_facecolor(background_color)
+            all_speeds = pd.concat([download_speeds, upload_speeds])
+            min_speed = all_speeds.min()
+            max_speed = all_speeds.max()
 
+            colors_list = settings.get("colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet'])
+            valid_colors = list(mcolors.CSS4_COLORS.keys())
+            colors_list = [c for c in settings.get("colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet']) if c in valid_colors]
 
-        dl_colors = cmap(norm(download_speeds))
-        ul_colors = cmap(norm(upload_speeds))
+            if not colors_list:
+                # Fallback in case user provides an empty or invalid list
+                colors_list = ['red', 'orange', 'yellow', 'green', 'blue', 'violet']
 
-        ax.scatter(times_in_hours[:-1], download_speeds[:-1], color=dl_colors[:-1], label='Download', s=30, edgecolor='k', linewidth=0.3)
-        ax.scatter(times_in_hours[:-1], upload_speeds[:-1], color=ul_colors[:-1], label='Upload', s=30, edgecolor='k', linewidth=0.3)
+            cmap = mcolors.LinearSegmentedColormap.from_list("speed_cmap", colors_list)
+            norm = mcolors.Normalize(vmin=min_speed, vmax=max_speed)
 
-        scatter_settings = settings.get("scatter", {})
-        edgecolor = scatter_settings.get("edgecolor", "black")
-        linewidth = scatter_settings.get("linewidth", 1.5)
-        marker = scatter_settings.get("marker", "o")
-        size = scatter_settings.get("size", 40)
+            background_color = settings.get("background_color", "white")
+            fig, ax = plt.subplots(figsize=(10, 6))
 
-        ax.scatter(times_in_hours[-1], download_speeds.iloc[-1], 
-                color=dl_colors[-1], label='Latest Download', 
-                s=size, edgecolor=edgecolor, linewidth=linewidth, marker=marker)
+            text_color = settings.get("text_color", "black")
+            line_color = settings.get("line_color", "black")
 
-        ax.scatter(times_in_hours[-1], upload_speeds.iloc[-1], 
-                color=ul_colors[-1], label='Latest Upload', 
-                s=size, edgecolor=edgecolor, linewidth=linewidth, marker=marker)
+            # Titles and labels
+            ax.set_title("Scatter Plot", color=text_color)
+            ax.set_xlabel("X", color=text_color)
+            ax.set_ylabel("Y", color=text_color)
 
+            # Ticks
+            ax.tick_params(colors=text_color)
 
-        avg_lines_settings = settings.get("average_lines", {})
-        if avg_lines_settings.get("enabled", True):
-            avg_dl = download_speeds.mean()
-            avg_ul = upload_speeds.mean()
+            # Spines
+            for spine in ax.spines.values():
+                spine.set_color(line_color)
 
-            dl_settings = avg_lines_settings.get("download", {})
-            ul_settings = avg_lines_settings.get("upload", {})
+            # Optional grid
+            grid_settings = settings.get("grid", {})
+            grid_enabled = grid_settings.get("enabled", True)
 
-            ax.axhline(avg_dl,
-                    color=dl_settings.get("color", "blue"),
-                    linestyle=dl_settings.get("linestyle", "--"),
-                    linewidth=dl_settings.get("linewidth", 1.2),
-                    label=dl_settings.get("label_template", "Avg Download ({:.2f} Mbps)").format(avg_dl))
+            if grid_enabled:
+                grid_color = grid_settings.get("color", "gray")
+                grid_linestyle = grid_settings.get("linestyle", "--")
+                grid_linewidth = grid_settings.get("linewidth", 0.5)
+                ax.grid(True, color=grid_color, linestyle=grid_linestyle, linewidth=grid_linewidth)
+            else:
+                ax.grid(False)
 
-            ax.axhline(avg_ul,
-                    color=ul_settings.get("color", "red"),
-                    linestyle=ul_settings.get("linestyle", "--"),
-                    linewidth=ul_settings.get("linewidth", 1.2),
-                    label=ul_settings.get("label_template", "Avg Upload ({:.2f} Mbps)").format(avg_ul))
-
-        ax.set_xlabel('Hour')
-        ax.set_ylabel('Speed (Mbps)')
-        ax.set_title('Download and Upload Speeds')
-        ax.set_xticks(np.arange(0, 25, 1))
-        ax.set_xlim([0, 24])
-
-        # Colorbar on right
-        colorbar_settings = settings.get("colorbar", {})
-        cbar_label = colorbar_settings.get("label", "Speed (Mbps)")
-        cbar_text_color = colorbar_settings.get("text_color", "black")
-
-        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-        sm.set_array([])
-        cbar = plt.colorbar(sm, ax=ax)
-        cbar.set_label(cbar_label, color=cbar_text_color)
-
-        # Optionally apply color to tick labels too:
-        cbar.ax.yaxis.set_tick_params(color=cbar_text_color)
-        for tick_label in cbar.ax.get_yticklabels():
-            tick_label.set_color(cbar_text_color)
+            fig.patch.set_facecolor(background_color)
+            ax.set_facecolor(background_color)
 
 
-        # Legend below plot, centered
-        legend_settings = settings.get("legend", {})
-        legend_enabled = legend_settings.get("enabled", True)
-        legend_text_color = legend_settings.get("text_color", "black")
-        legend_ncol = legend_settings.get("ncol", 2)
-        legend_frameon = legend_settings.get("frameon", False)
+            dl_colors = cmap(norm(download_speeds))
+            ul_colors = cmap(norm(upload_speeds))
 
-        if legend_enabled:
-            legend = ax.legend(
-                loc='upper center',
-                bbox_to_anchor=(0.5, -0.15),  # below the chart
-                ncol=legend_ncol,
-                frameon=legend_frameon
-            )
-            for text in legend.get_texts():
-                text.set_color(legend_text_color)
-        else:
-            ax.get_legend().remove()  # Safely remove existing legend
+            ax.scatter(times_in_hours[:-1], download_speeds[:-1], color=dl_colors[:-1], label='Download', s=30, edgecolor='k', linewidth=0.3)
+            ax.scatter(times_in_hours[:-1], upload_speeds[:-1], color=ul_colors[:-1], label='Upload', s=30, edgecolor='k', linewidth=0.3)
+
+            scatter_settings = settings.get("scatter", {})
+            edgecolor = scatter_settings.get("edgecolor", "black")
+            linewidth = scatter_settings.get("linewidth", 1.5)
+            marker = scatter_settings.get("marker", "o")
+            size = scatter_settings.get("size", 40)
+
+            ax.scatter(times_in_hours[-1], download_speeds.iloc[-1], 
+                    color=dl_colors[-1], label='Latest Download', 
+                    s=size, edgecolor=edgecolor, linewidth=linewidth, marker=marker)
+
+            ax.scatter(times_in_hours[-1], upload_speeds.iloc[-1], 
+                    color=ul_colors[-1], label='Latest Upload', 
+                    s=size, edgecolor=edgecolor, linewidth=linewidth, marker=marker)
 
 
-        plt.tight_layout(rect=[0, 0.05, 1, 1])  # leave space below for legend
+            avg_lines_settings = settings.get("average_lines", {})
+            if avg_lines_settings.get("enabled", True):
+                avg_dl = download_speeds.mean()
+                avg_ul = upload_speeds.mean()
 
-        plt.savefig("scatter_plot.png", bbox_inches='tight')
-        plt.close()
+                dl_settings = avg_lines_settings.get("download", {})
+                ul_settings = avg_lines_settings.get("upload", {})
 
-        open_image("scatter_plot.png")
+                ax.axhline(avg_dl,
+                        color=dl_settings.get("color", "blue"),
+                        linestyle=dl_settings.get("linestyle", "--"),
+                        linewidth=dl_settings.get("linewidth", 1.2),
+                        label=dl_settings.get("label_template", "Avg Download ({:.2f} Mbps)").format(avg_dl))
+
+                ax.axhline(avg_ul,
+                        color=ul_settings.get("color", "red"),
+                        linestyle=ul_settings.get("linestyle", "--"),
+                        linewidth=ul_settings.get("linewidth", 1.2),
+                        label=ul_settings.get("label_template", "Avg Upload ({:.2f} Mbps)").format(avg_ul))
+
+            ax.set_xlabel('Hour')
+            ax.set_ylabel('Speed (Mbps)')
+            ax.set_title('Download and Upload Speeds')
+            ax.set_xticks(np.arange(0, 25, 1))
+            ax.set_xlim([0, 24])
+
+            # Colorbar on right
+            colorbar_settings = settings.get("colorbar", {})
+            cbar_label = colorbar_settings.get("label", "Speed (Mbps)")
+            cbar_text_color = colorbar_settings.get("text_color", "black")
+
+            sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+            sm.set_array([])
+            cbar = plt.colorbar(sm, ax=ax)
+            cbar.set_label(cbar_label, color=cbar_text_color)
+
+            # Optionally apply color to tick labels too:
+            cbar.ax.yaxis.set_tick_params(color=cbar_text_color)
+            for tick_label in cbar.ax.get_yticklabels():
+                tick_label.set_color(cbar_text_color)
+
+
+            # Legend below plot, centered
+            legend_settings = settings.get("legend", {})
+            legend_enabled = legend_settings.get("enabled", True)
+            legend_text_color = legend_settings.get("text_color", "black")
+            legend_ncol = legend_settings.get("ncol", 2)
+            legend_frameon = legend_settings.get("frameon", False)
+
+            if legend_enabled:
+                legend = ax.legend(
+                    loc='upper center',
+                    bbox_to_anchor=(0.5, -0.15),  # below the chart
+                    ncol=legend_ncol,
+                    frameon=legend_frameon
+                )
+                for text in legend.get_texts():
+                    text.set_color(legend_text_color)
+            else:
+                ax.get_legend().remove()  # Safely remove existing legend
+
+
+            plt.tight_layout(rect=[0, 0.05, 1, 1])  # leave space below for legend
+
+            plt.savefig("scatter_plot.png", bbox_inches='tight')
+            plt.close()
+
+            open_image("scatter_plot.png")
 
     except Exception as e:
         log_error(e)
@@ -427,7 +432,7 @@ def run_speed_test():
         output_text.set("❌ An error occurred during the speed test.\nCheck error_log.txt.")
 
 # Get btn_style colors from settings.json
-action_button_backround_color = settings.get("action_button_backround_color", "#0d1f3b")
+action_button_background_color = settings.get("action_button_background_color", "#0d1f3b")
 action_button_text_color = settings.get("action_button_text_color", "#1debb7")
 action_button_click_color = settings.get("action_button_click_color", "#2563eb")
 
@@ -435,7 +440,7 @@ auto_test_text_color = settings.get("auto_test_text_color", "white")
 sound_text_color = settings.get("sound_text_color", "white")
 music_test_text_color = settings.get("music_test_text_color", "white")
 
-btn_style = {"font": ("Segoe UI", 12), "bg": action_button_backround_color, "fg": action_button_text_color, "activebackground": action_button_click_color, "width": 25, "bd": 0, "relief": tk.FLAT}
+btn_style = {"font": ("Segoe UI", 12), "bg": action_button_background_color, "fg": action_button_text_color, "activebackground": action_button_click_color, "width": 25, "bd": 0, "relief": tk.FLAT}
 
 test_button = tk.Button(frame, text="🚀 Test Internet Speed", command=handle_speed_test, **btn_style)
 test_button.grid(row=1, column=0, columnspan=3, pady=10)
