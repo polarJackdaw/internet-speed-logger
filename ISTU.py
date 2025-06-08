@@ -2,6 +2,7 @@ import datetime
 import speedtest
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import ttk
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,7 +16,7 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.2.1"
+VERSION = "2.2.2"
 
 # ==== Import settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
@@ -28,6 +29,7 @@ def load_settings():
         return {}
     
 settings = load_settings()
+at_latest = None
     
 # ==== Assign sound folder ====
 SOUND_FOLDER = os.path.join(os.path.dirname(__file__), "sounds")
@@ -359,30 +361,57 @@ auto_test_enabled = tk.BooleanVar(value=False)
 auto_test_interval = tk.IntVar(value=5)  # minutes
 
 def schedule_auto_test():
+    global at_latest
+
     if auto_test_enabled.get():
-        handle_speed_test()
-        root.after(auto_test_interval.get() * 60 * 1000, schedule_auto_test)
+        if at_latest == None:
+            at_latest = datetime.datetime.now()
+
+        at_done_seconds = auto_test_interval.get() * 60
+        at_waited_seconds = (datetime.datetime.now() - at_latest).total_seconds()
+        at_progress = at_waited_seconds / at_done_seconds
+        progress_bar["value"] = (at_progress * 100)
+        print(at_progress)
+        if at_done_seconds > at_waited_seconds:
+            print("Counting.")
+            print(at_done_seconds, at_waited_seconds)
+        else:
+            print("Done.")
+            print(at_done_seconds, at_waited_seconds)
+            at_latest = None
+            if not testing.get():
+                handle_speed_test()
+
+        root.after(1000, schedule_auto_test)
+    else:
+        at_latest = None
+
 
 def toggle_auto_test():
-
-    auto_test_enabled.set(not auto_test_enabled.get())
-    if auto_test_enabled.get():
-        if sound_enabled:
-            play_sound("auto_on.wav")
-        auto_btn.config(text="Auto Test: ON", bg=autotest_active_color)
-        schedule_auto_test()
+    if not testing.get():
+        auto_test_enabled.set(not auto_test_enabled.get())
+        if auto_test_enabled.get():
+            if sound_enabled:
+                play_sound("auto_on.wav")
+            auto_btn.config(text="Auto Test: ON              ", bg=autotest_active_color)
+            schedule_auto_test()
+        else:
+            if sound_enabled:
+                play_sound("auto_off.wav")
+            auto_btn.config(text="Auto Test: OFF             ", bg=autotest_inactive_color)
     else:
-        if sound_enabled:
-            play_sound("auto_off.wav")
-        auto_btn.config(text="Auto Test: OFF", bg=autotest_inactive_color)
+        messagebox.showinfo("Info", "Please wait for the current test to finish.")
 
 def handle_speed_test():
-    if sound_enabled and testing_sound:
-        testing_sound.play(loops=-1)
-    output_text.set("Testing internet speed...\nPlease wait...")
-    testing.set(True)
-    animate_gif()
-    threading.Thread(target=run_speed_test, daemon=True).start()
+    if not testing.get():
+        if sound_enabled and testing_sound:
+            testing_sound.play(loops=-1)
+        output_text.set(f"Testing internet speed... Please wait...\n\n {output_text.get()}")
+        testing.set(True)
+        animate_gif()
+        threading.Thread(target=run_speed_test, daemon=True).start()
+    else:
+        pass
 
 def run_speed_test():
     result = collect_data()
@@ -471,13 +500,20 @@ test_button.grid(row=1, column=0, columnspan=3, pady=10)
 plot_button = tk.Button(frame, text="📈 Generate Scatter Plot", command=save_scatter_plot, **plot_btn_style)
 plot_button.grid(row=2, column=0, columnspan=3, pady=10)
 
-auto_btn = tk.Button(frame, text="Auto Test: OFF", command=toggle_auto_test,
-                     font=("Segoe UI", 12), fg=auto_test_text_color, width=25, bg=autotest_inactive_color, bd=0, relief=tk.FLAT)
-auto_btn.grid(row=6, column=0, columnspan=3, pady=(20, 5))
+progress_bar_style = ttk.Style(root)
+progress_bar_style.theme_use('default')  # Make sure you're not using a native style
+progress_bar_style.configure("custom.Horizontal.TProgressbar",
+                troughcolor='#eeeeee',
+                background='#4CAF50',
+                thickness=20)
+progress_bar = ttk.Progressbar(frame, style="custom.Horizontal.TProgressbar",
+                           orient="horizontal", length=200, mode="determinate")
+progress_bar.grid(row=6, column=1, columnspan=3, pady=(20, 5))
+progress_bar["value"] = 100  # Set progress
 
-interval_label = tk.Label(frame, text="Interval (min):", font=("Segoe UI", 11),
-                          fg=interval_text_color, bg=frame_color)
-interval_label.grid(row=7, column=0, sticky="e", padx=(0, 10))
+auto_btn = tk.Button(frame, text="Auto Test: OFF             ", command=toggle_auto_test,
+                     font=("Segoe UI", 12), fg=auto_test_text_color, width=20, bg=autotest_inactive_color, bd=0, relief=tk.FLAT)
+auto_btn.grid(row=6, column=0, columnspan=1, pady=(20, 5), padx=0)
 
 
 interval_spinbox = tk.Spinbox(
@@ -488,9 +524,9 @@ interval_spinbox = tk.Spinbox(
     textvariable=auto_test_interval,
     font=("Segoe UI", 11),
     foreground=interval_text_color,
-    background=interval_background_color
+    background=interval_background_color,
 )
-interval_spinbox.grid(row=7, column=1, sticky="w")
+interval_spinbox.grid(row=6, column=0, sticky="w", pady=(20, 5), padx=(160, 0))
 
 
 def on_interval_change(event):

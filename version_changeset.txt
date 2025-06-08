@@ -27,3 +27,6 @@ Version 2.2.0
     - Added settings for legend in plot
 Version 2.2.1
     - Fixed plot.wav bug
+Version 2.2.2
+    - Fixed overlapping test's bug
+    - Added progress bar to auto test
