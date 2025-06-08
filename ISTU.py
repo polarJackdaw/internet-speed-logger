@@ -15,7 +15,7 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.2.0"
+VERSION = "2.2.1"
 
 # ==== Import settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
@@ -186,7 +186,7 @@ def save_scatter_plot():
             #messagebox.showinfo("Info", "Please run a speed test first.")
             return
         else:
-            #play_sound("plot.wav")
+            play_sound("plot.wav")
             data = pd.read_csv('internet_data.txt', header=None)
             if data.shape[1] < 4:
                 raise ValueError("Data file does not have the required columns.")
