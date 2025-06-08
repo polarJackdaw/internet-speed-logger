@@ -1,0 +1,75 @@
+{
+  "music_folder": "sounds/music",
+  "frame_color": "#2D004D",
+  "ISTU_text_color": "#5AFE67",
+  "result_text_color": "#FF6EC7",
+  "test_button_text_color": "#2D004D",
+  "test_button_background_color": "#00FFD0",
+  "test_button_click_color": "#008A70",
+  "plot_button_text_color": "#2D004D",
+  "plot_button_background_color": "#D6389A",
+  "plot_button_click_color": "#8D3D6E",
+
+"sound_text_color": "#2D004D",
+"sound_active_color": "#00FFD0",
+"sound_inactive_color": "#008A70",
+
+"music_test_text_color": "#2D004D",
+"music_active_color": "#00FFD0",
+"music_inactive_color": "#008A70",
+
+"auto_test_text_color": "#2D004D",
+"autotest_active_color": "#00FFD0",
+"autotest_inactive_color": "#008A70",
+
+  "plot_colors_list": [
+    "#FF00C8",
+    "#FF9000",
+    "#FFFF00",
+    "#00FF00",
+    "#00D9FF",
+    "#B200FF"
+  ],
+  "plot_background_color": "#1A001F",
+  "plot_text_color": "#39FF14",
+  "plot_border_color": "#39FF14",
+  "legend": {
+    "text_color": "#FF6EC7",
+    "legend_background_color": "#1A001F",
+    "legend_border_color": "#FF6EC7",
+    "enabled": true,
+    "ncol": 2,
+    "frameon": true
+  },
+  "colorbar": {
+    "label": "Speed (Mbps)",
+    "text_color": "#FF6F00"
+  },
+  "grid": {
+    "enabled": false,
+    "color": "#FF00FF",
+    "linestyle": ":",
+    "linewidth": 1
+  },
+  "scatter": {
+    "edge_color": "#00FFFF",
+    "linewidth": 2,
+    "marker": "o",
+    "size": 50
+  },
+  "average_lines": {
+    "enabled": true,
+    "download": {
+      "color": "#FF00FF",
+      "linestyle": "-.",
+      "linewidth": 2,
+      "label_template": "Avg Download ({:.2f} Mbps)"
+    },
+    "upload": {
+      "color": "#00FFFF",
+      "linestyle": "-.",
+      "linewidth": 2,
+      "label_template": "Avg Upload ({:.2f} Mbps)"
+    }
+  }
+}

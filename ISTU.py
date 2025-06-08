@@ -15,9 +15,9 @@ import matplotlib.colors as mcolors
 import random
 import json
 
-VERSION = "2.1.3"
+VERSION = "2.2.0"
 
-# ==== Load settings from JSON ====
+# ==== Import settings from JSON ====
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
 def load_settings():
     try:
@@ -26,15 +26,84 @@ def load_settings():
     except Exception as e:
         log_error(f"Failed to load settings: {e}")
         return {}
+    
 settings = load_settings()
+    
+# ==== Assign sound folder ====
+SOUND_FOLDER = os.path.join(os.path.dirname(__file__), "sounds")
+MUSIC_FOLDER = os.path.join(os.path.dirname(__file__), settings.get("music_folder", "sounds/music"))
+
+# ==== Assign values ====
+test_button_text_color = settings.get("test_button_text_color", "#1debb7")
+test_button_background_color = settings.get("test_button_background_color", "#0d1f3b")
+test_button_click_color = settings.get("test_button_click_color", "#0d1f3b")
+
+plot_button_text_color = settings.get("plot_button_text_color", "#1debb7")
+plot_button_background_color = settings.get("plot_button_background_color", "#0d1f3b")
+plot_button_click_color = settings.get("plot_button_click_color", "#0d1f3b")
+
+action_button_background_color = settings.get("action_button_background_color", "#0d1f3b")
+action_button_text_color = settings.get("action_button_text_color", "#1debb7")
+
+action_button_click_color = settings.get("action_button_click_color", "#2563eb")
+auto_test_text_color = settings.get("auto_test_text_color", "white")
+sound_text_color = settings.get("sound_text_color", "white")
+music_test_text_color = settings.get("music_test_text_color", "white")
+
+plot_colors_list = settings.get("plot_colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet'])
+valid_colors = list(mcolors.CSS4_COLORS.keys())
+plot_colors_list = [c for c in settings.get("plot_colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet']) if c in valid_colors]
+
+plot_background_color = settings.get("plot_background_color", "white")
+plot_text_color = settings.get("plot_text_color", "black")
+plot_border_color = settings.get("plot_border_color", "black")
+
+if not plot_colors_list:
+    # Fallback in case user provides an empty or invalid list
+    plot_colors_list = ['red', 'orange', 'yellow', 'green', 'blue', 'violet']
+
+grid_settings = settings.get("grid", {})
+grid_enabled = grid_settings.get("enabled", True)
+grid_color = grid_settings.get("color", "gray")
+grid_linestyle = grid_settings.get("linestyle", "--")
+grid_linewidth = grid_settings.get("linewidth", 0.5)
+
+scatter_settings = settings.get("scatter", {})
+edge_color = scatter_settings.get("edge_color", "white")
+linewidth = scatter_settings.get("linewidth", 1.5)
+marker = scatter_settings.get("marker", "o")
+size = scatter_settings.get("size", 40)
+avg_lines_settings = settings.get("average_lines", {})
+
+# Code on rows: 213-231 Unmoveable (ish) settings
+
+colorbar_settings = settings.get("colorbar", {})
+cbar_label = colorbar_settings.get("label", "Speed (Mbps)")
+cbar_text_color = colorbar_settings.get("plot_text_color", "black")
+
+legend_settings = settings.get("legend", {})
+legend_enabled = legend_settings.get("enabled", True)
+legend_text_color = legend_settings.get("text_color", "white")
+legend_background_color = legend_settings.get("legend_background_color")
+legend_ncol = legend_settings.get("ncol", 2)
+legend_frameon = legend_settings.get("frameon", False)
+legend_border_color = legend_settings.get("legend_border_color", "#000000")
+
+sound_active_color = settings.get("sound_active_color", "#007000")
+sound_inactive_color = settings.get("sound_inactive_color", "#8F000A")
+
+music_active_color = settings.get("music_active_color", "#007000")
+music_inactive_color = settings.get("music_inactive_color", "#8F000A")
+
+autotest_active_color = settings.get("autotest_active_color", "#007000")
+autotest_inactive_color = settings.get("autotest_inactive_color", "#8F000A")
+
+interval_text_color = settings.get("interval_text_color", "black")
+interval_background_color = settings.get("interval_background_color", "grey")
 
 # ==== Initialize Pygame Mixer ====
 pygame.mixer.init()
 loaded_sounds = {}
-
-# ==== Path to sound folder ====
-SOUND_FOLDER = os.path.join(os.path.dirname(__file__), "sounds")
-MUSIC_FOLDER = os.path.join(os.path.dirname(__file__), settings.get("music_folder", "sounds/music"))
 
 # Load sounds into loaded_sounds[]
 def load_sound(filename):
@@ -130,49 +199,33 @@ def save_scatter_plot():
             min_speed = all_speeds.min()
             max_speed = all_speeds.max()
 
-            colors_list = settings.get("colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet'])
-            valid_colors = list(mcolors.CSS4_COLORS.keys())
-            colors_list = [c for c in settings.get("colors_list", ['red', 'orange', 'yellow', 'green', 'blue', 'violet']) if c in valid_colors]
 
-            if not colors_list:
-                # Fallback in case user provides an empty or invalid list
-                colors_list = ['red', 'orange', 'yellow', 'green', 'blue', 'violet']
-
-            cmap = mcolors.LinearSegmentedColormap.from_list("speed_cmap", colors_list)
+            cmap = mcolors.LinearSegmentedColormap.from_list("speed_cmap", plot_colors_list)
             norm = mcolors.Normalize(vmin=min_speed, vmax=max_speed)
 
-            background_color = settings.get("background_color", "white")
             fig, ax = plt.subplots(figsize=(10, 6))
 
-            text_color = settings.get("text_color", "black")
-            line_color = settings.get("line_color", "black")
-
             # Titles and labels
-            ax.set_title("Scatter Plot", color=text_color)
-            ax.set_xlabel("X", color=text_color)
-            ax.set_ylabel("Y", color=text_color)
+            ax.set_title("Scatter Plot", color=plot_text_color)
+            ax.set_xlabel("X", color=plot_text_color)
+            ax.set_ylabel("Y", color=plot_text_color)
 
             # Ticks
-            ax.tick_params(colors=text_color)
+            ax.tick_params(colors=plot_text_color)
 
             # Spines
             for spine in ax.spines.values():
-                spine.set_color(line_color)
+                spine.set_color(plot_border_color)
 
-            # Optional grid
-            grid_settings = settings.get("grid", {})
-            grid_enabled = grid_settings.get("enabled", True)
+
 
             if grid_enabled:
-                grid_color = grid_settings.get("color", "gray")
-                grid_linestyle = grid_settings.get("linestyle", "--")
-                grid_linewidth = grid_settings.get("linewidth", 0.5)
                 ax.grid(True, color=grid_color, linestyle=grid_linestyle, linewidth=grid_linewidth)
             else:
                 ax.grid(False)
 
-            fig.patch.set_facecolor(background_color)
-            ax.set_facecolor(background_color)
+            fig.patch.set_facecolor(plot_background_color)
+            ax.set_facecolor(plot_background_color)
 
 
             dl_colors = cmap(norm(download_speeds))
@@ -181,22 +234,14 @@ def save_scatter_plot():
             ax.scatter(times_in_hours[:-1], download_speeds[:-1], color=dl_colors[:-1], label='Download', s=30, edgecolor='k', linewidth=0.3)
             ax.scatter(times_in_hours[:-1], upload_speeds[:-1], color=ul_colors[:-1], label='Upload', s=30, edgecolor='k', linewidth=0.3)
 
-            scatter_settings = settings.get("scatter", {})
-            edgecolor = scatter_settings.get("edgecolor", "black")
-            linewidth = scatter_settings.get("linewidth", 1.5)
-            marker = scatter_settings.get("marker", "o")
-            size = scatter_settings.get("size", 40)
-
             ax.scatter(times_in_hours[-1], download_speeds.iloc[-1], 
                     color=dl_colors[-1], label='Latest Download', 
-                    s=size, edgecolor=edgecolor, linewidth=linewidth, marker=marker)
+                    s=size, edgecolor=edge_color, linewidth=linewidth, marker=marker)
 
             ax.scatter(times_in_hours[-1], upload_speeds.iloc[-1], 
                     color=ul_colors[-1], label='Latest Upload', 
-                    s=size, edgecolor=edgecolor, linewidth=linewidth, marker=marker)
+                    s=size, edgecolor=edge_color, linewidth=linewidth, marker=marker)
 
-
-            avg_lines_settings = settings.get("average_lines", {})
             if avg_lines_settings.get("enabled", True):
                 avg_dl = download_speeds.mean()
                 avg_ul = upload_speeds.mean()
@@ -222,11 +267,6 @@ def save_scatter_plot():
             ax.set_xticks(np.arange(0, 25, 1))
             ax.set_xlim([0, 24])
 
-            # Colorbar on right
-            colorbar_settings = settings.get("colorbar", {})
-            cbar_label = colorbar_settings.get("label", "Speed (Mbps)")
-            cbar_text_color = colorbar_settings.get("text_color", "black")
-
             sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
             sm.set_array([])
             cbar = plt.colorbar(sm, ax=ax)
@@ -237,21 +277,16 @@ def save_scatter_plot():
             for tick_label in cbar.ax.get_yticklabels():
                 tick_label.set_color(cbar_text_color)
 
-
-            # Legend below plot, centered
-            legend_settings = settings.get("legend", {})
-            legend_enabled = legend_settings.get("enabled", True)
-            legend_text_color = legend_settings.get("text_color", "black")
-            legend_ncol = legend_settings.get("ncol", 2)
-            legend_frameon = legend_settings.get("frameon", False)
-
             if legend_enabled:
                 legend = ax.legend(
                     loc='upper center',
-                    bbox_to_anchor=(0.5, -0.15),  # below the chart
+                    bbox_to_anchor=(0.5, -0.15),
                     ncol=legend_ncol,
                     frameon=legend_frameon
                 )
+                legend.get_frame().set_facecolor(legend_background_color)
+                legend.get_frame().set_edgecolor(legend_border_color)
+                #legend.get_frame().set_facecolor(legend_background_color, "#22223b")  # <-- Add this line
                 for text in legend.get_texts():
                     text.set_color(legend_text_color)
             else:
@@ -273,24 +308,19 @@ def save_scatter_plot():
 root = tk.Tk()
 root.title("ISTU v" + VERSION)
 root.iconbitmap('istu.ico')
-root.configure(bg=settings.get("root_background_color", "#0d0dc1"))
+root.configure(bg="#000000")
 root.resizable(False, False)
 
-# Get button colors from settings.json
-button_active_color = settings.get("button_active_color", "#007000")
-button_inactive_color = settings.get("button_inactive_color", "#8F000A")
-
-
-frame_bg = settings.get("frame_background_color", "#1e1e2e")
-frame = tk.Frame(root, bg=frame_bg, padx=20, pady=20)
+frame_color = settings.get("frame_color", "#1e1e2e")
+frame = tk.Frame(root, bg=frame_color, padx=20, pady=20)
 frame.pack()
 
 title_label = tk.Label(
     frame,
     text="Internet Speed Test Utility",
     font=("Segoe UI", 18, "bold"),
-    fg=settings.get("title_text_color", "#1bcca0"),
-    bg=frame_bg
+    fg=settings.get("ISTU_text_color", "#1bcca0"),
+    bg=frame_color
 )
 
 title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
@@ -303,8 +333,8 @@ output_label = tk.Label(
     anchor="w",
     wraplength=480,
     font=("Consolas", 11),
-    fg=settings.get("output_text_color", "#e0e0e0"),
-    bg=frame_bg
+    fg=settings.get("result_text_color", "#e0e0e0"),
+    bg=frame_color
 )
 output_label.grid(row=4, column=0, columnspan=3, pady=20)
 
@@ -312,7 +342,7 @@ output_label.grid(row=4, column=0, columnspan=3, pady=20)
 idle_img = ImageTk.PhotoImage(Image.open("idle.png"))
 gif = Image.open("loading.gif")
 gif_frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
-gif_label = tk.Label(frame, image=idle_img, bg=frame_bg)
+gif_label = tk.Label(frame, image=idle_img, bg=frame_color)
 gif_label.grid(row=5, column=0, columnspan=3)
 
 testing = tk.BooleanVar(value=False)
@@ -339,12 +369,12 @@ def toggle_auto_test():
     if auto_test_enabled.get():
         if sound_enabled:
             play_sound("auto_on.wav")
-        auto_btn.config(text="Auto Test: ON", bg=button_active_color)
+        auto_btn.config(text="Auto Test: ON", bg=autotest_active_color)
         schedule_auto_test()
     else:
         if sound_enabled:
             play_sound("auto_off.wav")
-        auto_btn.config(text="Auto Test: OFF", bg=button_inactive_color)
+        auto_btn.config(text="Auto Test: OFF", bg=autotest_inactive_color)
 
 def handle_speed_test():
     if sound_enabled and testing_sound:
@@ -431,32 +461,22 @@ def run_speed_test():
     else:
         output_text.set("❌ An error occurred during the speed test.\nCheck error_log.txt.")
 
-# Get btn_style colors from settings.json
-action_button_background_color = settings.get("action_button_background_color", "#0d1f3b")
-action_button_text_color = settings.get("action_button_text_color", "#1debb7")
-action_button_click_color = settings.get("action_button_click_color", "#2563eb")
+test_btn_style = {"font": ("Segoe UI", 12), "bg": test_button_background_color, "fg": test_button_text_color, "activebackground": test_button_click_color, "width": 25, "bd": 0, "relief": tk.FLAT}
+plot_btn_style = {"font": ("Segoe UI", 12), "bg": plot_button_background_color, "fg": plot_button_text_color, "activebackground": plot_button_click_color, "width": 25, "bd": 0, "relief": tk.FLAT}
 
-auto_test_text_color = settings.get("auto_test_text_color", "white")
-sound_text_color = settings.get("sound_text_color", "white")
-music_test_text_color = settings.get("music_test_text_color", "white")
 
-btn_style = {"font": ("Segoe UI", 12), "bg": action_button_background_color, "fg": action_button_text_color, "activebackground": action_button_click_color, "width": 25, "bd": 0, "relief": tk.FLAT}
-
-test_button = tk.Button(frame, text="🚀 Test Internet Speed", command=handle_speed_test, **btn_style)
+test_button = tk.Button(frame, text="🚀 Test Internet Speed", command=handle_speed_test, **test_btn_style)
 test_button.grid(row=1, column=0, columnspan=3, pady=10)
 
-plot_button = tk.Button(frame, text="📈 Generate Scatter Plot", command=save_scatter_plot, **btn_style)
+plot_button = tk.Button(frame, text="📈 Generate Scatter Plot", command=save_scatter_plot, **plot_btn_style)
 plot_button.grid(row=2, column=0, columnspan=3, pady=10)
 
 auto_btn = tk.Button(frame, text="Auto Test: OFF", command=toggle_auto_test,
-                     font=("Segoe UI", 12), fg=auto_test_text_color, width=25, bg=button_inactive_color, bd=0, relief=tk.FLAT)
+                     font=("Segoe UI", 12), fg=auto_test_text_color, width=25, bg=autotest_inactive_color, bd=0, relief=tk.FLAT)
 auto_btn.grid(row=6, column=0, columnspan=3, pady=(20, 5))
 
-interval_text_color = settings.get("interval_text_color", "black")
-interval_background_color = settings.get("interval_background_color", "grey")
-
 interval_label = tk.Label(frame, text="Interval (min):", font=("Segoe UI", 11),
-                          fg=interval_text_color, bg=frame_bg)
+                          fg=interval_text_color, bg=frame_color)
 interval_label.grid(row=7, column=0, sticky="e", padx=(0, 10))
 
 
@@ -493,13 +513,13 @@ def toggle_mute():
         testing_sound.play(loops=-1)
 
     if sound_enabled:
-        mute_button.config(text="🔈 Sound ON", bg=button_active_color)
+        mute_button.config(text="🔈 Sound ON", bg=sound_active_color)
     else:
-        mute_button.config(text="🔇 Muted", bg=button_inactive_color)
+        mute_button.config(text="🔇 Muted", bg=sound_inactive_color)
 
 
 mute_button = tk.Button(frame, text="🔈 Sound ON", command=toggle_mute,
-                        font=("Segoe UI", 12), fg=sound_text_color, width=15, bg=button_active_color, bd=0, relief=tk.FLAT)
+                        font=("Segoe UI", 12), fg=sound_text_color, width=15, bg=sound_active_color, bd=0, relief=tk.FLAT)
 mute_button.grid(row=8, column=0, pady=(10, 20))
 
 # === Music Button and Logic ===
@@ -531,18 +551,18 @@ def toggle_music():
     if music_playing:
         pygame.mixer.music.stop()
         music_playing = False
-        music_button.config(text="🎵 Music OFF", bg=button_inactive_color)
+        music_button.config(text="🎵 Music OFF", bg=music_inactive_color)
     else:
         if not music_files:
             messagebox.showwarning("No Music", "No mp3 files found in the 'sounds/music' folder.")
             return
         music_playing = True
-        music_button.config(text="🎵 Music ON", bg=button_active_color)
+        music_button.config(text="🎵 Music ON", bg=music_active_color)
         play_random_song()
         check_music()
 
 music_button = tk.Button(frame, text="🎵 Music OFF", command=toggle_music,
-                         font=("Segoe UI", 12), fg=music_test_text_color, width=15, bg=button_inactive_color, bd=0, relief=tk.FLAT)
+                         font=("Segoe UI", 12), fg=music_test_text_color, width=15, bg=music_inactive_color, bd=0, relief=tk.FLAT)
 music_button.grid(row=8, column=1, pady=(10, 20), padx=(10,0))
 
 root.mainloop()

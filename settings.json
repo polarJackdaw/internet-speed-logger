@@ -1,16 +1,26 @@
 {
   "music_folder": "sounds/music",
-  "action_button_text_color": "#1debb7",
-  "action_button_background_color": "#0d1f3b",
-  "action_button_click_color": "#2563eb",
-  "button_active_color": "#007000",
-  "button_inactive_color": "#8F000A",
-  "auto_test_text_color": "white",
+  "frame_color": "#1e1e2e",
+  "ISTU_text_color": "#50FBD1",
+  "result_text_color": "#e0e0e0",
+  "test_button_text_color": "#63E120",
+  "test_button_background_color": "#17430E",
+  "test_button_click_color": "#062B18",
+  "plot_button_text_color": "#FF851A",
+  "plot_button_background_color": "#764E12",
+  "plot_button_click_color": "#604010",
   "sound_text_color": "white",
+  "sound_active_color": "#007000",
+  "sound_inactive_color": "#8F000A",
   "music_test_text_color": "white",
+  "music_active_color": "#007000",
+  "music_inactive_color": "#8F000A",
+  "auto_test_text_color": "white",
+  "autotest_active_color": "#007000",
+  "autotest_inactive_color": "#8F000A",
   "interval_text_color": "black",
   "interval_background_color": "grey",
-  "colors_list": [
+  "plot_colors_list": [
     "red",
     "orange",
     "yellow",
@@ -18,47 +28,45 @@
     "blue",
     "violet"
   ],
-  "background_color": "#161616",
-  "text_color": "red",
-  "line_color": "blue",
-  "frame_background_color": "#1e1e2e",
-  "title_text_color": "#1bcca0",
-  "output_text_color": "#e0e0e0",
-  "root_background_color": "#0d0dc1",
+  "plot_background_color": "#161616",
+  "plot_text_color": "cyan",
+  "plot_border_color": "cyan",
   "legend": {
     "text_color": "pink",
+    "legend_background_color": "#282828",
+    "legend_border_color": "pink",
     "enabled": true,
     "ncol": 2,
-    "frameon": false
+    "frameon": true
   },
   "colorbar": {
     "label": "Speed (Mbps)",
-    "text_color": "red"
+    "text_color": "#FF4500"
   },
   "grid": {
     "enabled": false,
-    "color": "green",
-    "linestyle": "-",
-    "linewidth": 0.5
+    "color": "#FF0000",
+    "linestyle": ":",
+    "linewidth": 1
   },
   "scatter": {
-    "edgecolor": "white",
-    "linewidth": 1.5,
-    "marker": "x",
-    "size": 40
+    "edge_color": "#00FFFF",
+    "linewidth": 2,
+    "marker": "o",
+    "size": 50
   },
   "average_lines": {
     "enabled": true,
     "download": {
-      "color": "blue",
-      "linestyle": "--",
-      "linewidth": 1.2,
+      "color": "#FF00FF",
+      "linestyle": "-.",
+      "linewidth": 2,
       "label_template": "Avg Download ({:.2f} Mbps)"
     },
     "upload": {
-      "color": "red",
-      "linestyle": "--",
-      "linewidth": 1.2,
+      "color": "#00FF00",
+      "linestyle": "-.",
+      "linewidth": 2,
       "label_template": "Avg Upload ({:.2f} Mbps)"
     }
   }
